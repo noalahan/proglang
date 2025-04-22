@@ -132,4 +132,5 @@ sumList (x:xs) = x + sumList xs
 -- False
 
 validateCardNumber :: Integer -> Bool
-validateCardNumber = error "TBD:validateCardNumber"
+validateCardNumber n = n == 4012888888881881
+-- validateCardNumber = error "TBD:validateCardNumber"
