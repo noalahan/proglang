@@ -103,10 +103,10 @@
 #endif /* MIN_TOOL_VERSION_runghc */
 
 #ifndef CURRENT_PACKAGE_KEY
-#define CURRENT_PACKAGE_KEY "hw1-haskell-0.1.0.0-D8ktlmnxLqBBe9LwAjaJGL"
+#define CURRENT_PACKAGE_KEY "hw1-haskell-0.1.0.0-9vt0PZ2OgzMJp8GM8NRCQU"
 #endif /* CURRENT_packageKey */
 #ifndef CURRENT_COMPONENT_ID
-#define CURRENT_COMPONENT_ID "hw1-haskell-0.1.0.0-D8ktlmnxLqBBe9LwAjaJGL"
+#define CURRENT_COMPONENT_ID "hw1-haskell-0.1.0.0-9vt0PZ2OgzMJp8GM8NRCQU"
 #endif /* CURRENT_COMPONENT_ID */
 #ifndef CURRENT_PACKAGE_VERSION
 #define CURRENT_PACKAGE_VERSION "0.1.0.0"
