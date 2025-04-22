@@ -100,7 +100,10 @@ digitsOfInts (x:xs) = digitsOfInt x ++ digitsOfInts xs
 -- []
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther xs = error "TBD:doubleEveryOther"
+doubleEveryOther [] = []
+doubleEveryOther [x] = [x]  -- odd length list
+doubleEveryOther (x:y:xs) = x : y*2 : doubleEveryOther xs
+-- doubleEveryOther xs = error "TBD:doubleEveryOther"
 
 
 -- | Sum the elements of a list
@@ -115,7 +118,9 @@ doubleEveryOther xs = error "TBD:doubleEveryOther"
 -- 36
 
 sumList :: [Integer] -> Integer
-sumList xs = error "TBD:sumList"
+sumList [] = 0
+sumList (x:xs) = x + sumList xs
+-- sumList xs = error "TBD:sumList"
 
 
 -- | Validate a credit card number
