@@ -143,10 +143,10 @@
 #endif /* MIN_TOOL_VERSION_runghc */
 
 #ifndef CURRENT_PACKAGE_KEY
-#define CURRENT_PACKAGE_KEY "hw2-random-art-0.1.0.0-1ZS7f1nHTcfIOjy1AkMzau"
+#define CURRENT_PACKAGE_KEY "hw2-random-art-0.1.0.0-Gyb3F7mspZwEBfS9fgs28H"
 #endif /* CURRENT_packageKey */
 #ifndef CURRENT_COMPONENT_ID
-#define CURRENT_COMPONENT_ID "hw2-random-art-0.1.0.0-1ZS7f1nHTcfIOjy1AkMzau"
+#define CURRENT_COMPONENT_ID "hw2-random-art-0.1.0.0-Gyb3F7mspZwEBfS9fgs28H"
 #endif /* CURRENT_COMPONENT_ID */
 #ifndef CURRENT_PACKAGE_VERSION
 #define CURRENT_PACKAGE_VERSION "0.1.0.0"
