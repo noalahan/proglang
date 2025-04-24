@@ -24,9 +24,9 @@ import Prelude hiding (lookup,reverse)
 -- 0
 
 assoc :: Int -> String -> [(String, Int)] -> Int
-assoc def key []                    = def
-assoc def key ((k, v):xs) | k == key   = v
-assoc def key ((k, v):xs)= assoc def key xs
+assoc def key []                        = def
+assoc def key ((k, v):xs) | k == key    = v
+assoc def key ((k, v):xs)               = assoc def key xs
 -- assoc def key kvs = error "TBD: assoc"
 
 --------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ assoc def key ((k, v):xs)= assoc def key xs
 -- []
 
 listReverseTR :: [a] -> [a]
-listReverseTR [] = []
+listReverseTR []     = []
 listReverseTR (x:xs) = (listReverseTR xs)++[x]
 -- listReverseTR xs = error "TBD: listReverseTR"
 
@@ -65,7 +65,13 @@ listReverseTR (x:xs) = (listReverseTR xs)++[x]
 -- []
 
 doubleEveryOtherTR :: [Integer] -> [Integer]
-doubleEveryOtherTR xs = error "TBD: doubleEveryOtherTR"
+doubleEveryOtherTR a = doubleEOHelper a []
+
+doubleEOHelper :: [Integer] -> [Integer] -> [Integer]
+doubleEOHelper [] d = d
+doubleEOHelper [x] d = d ++ [x]
+doubleEOHelper (a:b:xs) d = doubleEOHelper xs (d++[a, b+b])
+-- doubleEveryOtherTR xs = error "TBD: doubleEveryOtherTR"
 
 -- | Sum the elements of a list of `Integer`s.
 --
