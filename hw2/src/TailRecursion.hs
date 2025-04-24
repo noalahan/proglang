@@ -46,7 +46,9 @@ assoc def key ((k, v):xs)= assoc def key xs
 -- []
 
 listReverseTR :: [a] -> [a]
-listReverseTR xs = error "TBD: listReverseTR"
+listReverseTR [] = []
+listReverseTR (x:xs) = (listReverseTR xs)++[x]
+-- listReverseTR xs = error "TBD: listReverseTR"
 
 -- | Double every other integer in a list,
 --   starting with the second element.
