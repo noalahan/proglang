@@ -87,4 +87,9 @@ doubleEOHelper (a:b:xs) d = doubleEOHelper xs (d++[a, b+b])
 -- 36
 
 sumListTR :: [Integer] -> Integer
-sumListTR xs = error "TBD: sumListTR"
+sumListTR a = sumListHelper a 0
+
+sumListHelper :: [Integer] -> Integer -> Integer
+sumListHelper [] n = n
+sumListHelper (x:xs) n = sumListHelper xs n+x
+-- sumListTR xs = error "TBD: sumListTR"
