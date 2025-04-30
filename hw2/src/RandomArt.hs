@@ -78,12 +78,12 @@ sampleExpr3 =
 
 exprToString :: Expr -> String
 exprToString VarX                 = "x"
-exprToString VarY                 = error "TBD:VarY"
-exprToString (Sine e)             = error "TBD:Sin"
-exprToString (Cosine e)           = error "TBD:Cos"
-exprToString (Average e1 e2)      = error "TBD:Avg"
-exprToString (Times e1 e2)        = error "TBD:Times"
-exprToString (Thresh e1 e2 e3 e4) = error "TBD:Thresh"
+exprToString VarY                 = "y"
+exprToString (Sine e)             = "sin(pi*" ++ exprToString e ++ ")"
+exprToString (Cosine e)           = "cos(pi*" ++ exprToString e ++ ")"
+exprToString (Average e1 e2)      = "((" ++ exprToString e1 ++ "+" ++ exprToString e2 ++ ")/2)"
+exprToString (Times e1 e2)        = exprToString e1 ++ "*" ++ exprToString e2
+exprToString (Thresh e1 e2 e3 e4) = "(" ++ exprToString e1 ++ "<" ++ exprToString e2 ++ "?" ++ exprToString e3 ++ ":" ++ exprToString e4 ++ ")"
 
 --------------------------------------------------------------------------------
 -- | Evaluating arithmetic expressions at a given (x, y)-coordinate ------------
