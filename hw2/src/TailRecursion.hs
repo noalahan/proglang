@@ -24,9 +24,9 @@ import Prelude hiding (lookup,reverse)
 -- 0
 
 assoc :: Int -> String -> [(String, Int)] -> Int
-assoc def key []                        = def
-assoc def key ((k, v):xs) | k == key    = v
-assoc def key ((k, v):xs)               = assoc def key xs
+assoc def _   []                        = def
+assoc _   key ((k, v):_) | k == key    = v
+assoc def key (_:xs)               = assoc def key xs
 -- assoc def key kvs = error "TBD: assoc"
 
 --------------------------------------------------------------------------------
