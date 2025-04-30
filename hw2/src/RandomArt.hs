@@ -99,7 +99,14 @@ exprToString (Thresh e1 e2 e3 e4) = "(" ++ exprToString e1 ++ "<" ++ exprToStrin
 -- 0.8090169943749475
 
 eval :: Double -> Double -> Expr -> Double
-eval x y e = error "TBD:eval"
+eval x _ VarX                 = x
+eval _ y VarY                 = y
+eval x y (Sine e)             = sin(pi * (eval x y e))
+eval x y (Cosine e)           = cos(pi * (eval x y e))
+eval x y (Average e1 e2)      = ((eval x y e1) + (eval x y e2))/2
+eval x y (Times e1 e2)        = (eval x y e1) * (eval x y e2)
+eval x y (Thresh e1 e2 e3 e4) | (eval x y e1) < (eval x y e2) = (eval x y e3)
+                              | otherwise                     = (eval x y e4)
 
 evalFn :: Double -> Double -> Expr -> Double
 evalFn x y e = assert (-1.0 <= rv && rv <= 1.0) rv
