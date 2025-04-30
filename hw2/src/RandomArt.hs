@@ -122,12 +122,18 @@ evalFn x y e = assert (-1.0 <= rv && rv <= 1.0) rv
 --  Change and extend the `build` function to produce interesting expressions.
 
 build :: Int -> Expr
-build 0
-  | r < 5     = VarX
-  | otherwise = VarY
+build 0 | r < 5     = VarX
+        | otherwise = VarY
   where
-    r         = rand 10
-build d       = error "TBD:build"
+    r = rand 10
+build d | r < 1           = Sine    (build (d-1))
+        | r < 2 && r >= 1 = Cosine  (build (d-1))
+        | r < 3 && r >= 2 = Average (build (d-1)) (build (d-1))
+        | r < 4 && r >= 3 = Times   (build (d-1)) (build (d-1))
+        | otherwise       = Thresh  (build (d-1)) (build (d-1)) (build (d-1)) (build (d-1))
+  where
+    r = rand 10
+  
 
 --------------------------------------------------------------------------------
 -- | Best Image "Seeds" --------------------------------------------------------
