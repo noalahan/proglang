@@ -126,10 +126,10 @@ build 0 | r < 5     = VarX
         | otherwise = VarY
   where
     r = rand 10
-build d | r < 1           = Sine    (build (d-1))
-        | r < 2 && r >= 1 = Cosine  (build (d-1))
-        | r < 3 && r >= 2 = Average (build (d-1)) (build (d-1))
-        | r < 4 && r >= 3 = Times   (build (d-1)) (build (d-1))
+build d | r < 3           = Sine    (build (d-1))
+        | r < 6 && r >= 3 = Cosine  (build (d-1))
+        | r < 7 && r >= 6 = Average (build (d-1)) (build (d-1))
+        | r < 9 && r >= 7 = Times   (build (d-1)) (build (d-1))
         | otherwise       = Thresh  (build (d-1)) (build (d-1)) (build (d-1)) (build (d-1))
   where
     r = rand 10
@@ -141,16 +141,16 @@ build d | r < 1           = Sine    (build (d-1))
 
 -- grayscale
 g1, g2, g3 :: (Int, Int)
-g1 = (error "TBD:depth1", error "TBD:seed1")
-g2 = (error "TBD:depth2", error "TBD:seed2")
-g3 = (error "TBD:depth3", error "TBD:seed3")
+g1 = (8, 7)
+g2 = (10, 8)
+g3 = (7, 7)
 
 
 -- color
 c1, c2, c3 :: (Int, Int)
-c1 = (error "TBD:depth1", error "TBD:seed1")
-c2 = (error "TBD:depth2", error "TBD:seed2")
-c3 = (error "TBD:depth3", error "TBD:seed3")
+c1 = (7, 5)
+c2 = (11, 3)
+c3 = (12, 0)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
