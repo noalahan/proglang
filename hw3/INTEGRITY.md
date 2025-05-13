@@ -36,3 +36,6 @@ response:
     show (TimesVE e1 e2) = "(" ++ show e1 ++ " * " ++ show e2 ++ ")"
 
     Both approaches work — printf is cleaner for formatting if you already have it imported.
+
+* Used LYAH ch 6 to answer problem 3(a)
+    * specifically the extendEnv function for the FunEnv instance

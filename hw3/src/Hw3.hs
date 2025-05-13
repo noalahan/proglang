@@ -294,10 +294,11 @@ instance Env FunEnv where
 -- Just 21
 
 varExprEval :: Env a => a -> VarExpr -> Maybe Int
-varExprEval env expr = error "TBD: varExprEval"
-
-
-
+varExprEval _ (NumVE n)         = Just n
+varExprEval env (Var s)         = lookupInEnv s env
+varExprEval env (PlusVE e1 e2)  = opMaybe (+) (varExprEval env e1) (varExprEval env e2)
+varExprEval env (MinusVE e1 e2) = opMaybe (-) (varExprEval env e1) (varExprEval env e2)
+varExprEval env (TimesVE e1 e2) = opMaybe (*) (varExprEval env e1) (varExprEval env e2)
 
 
 -- | `evalAll` takes a list of `VarExpr`s and an environment,
