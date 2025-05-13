@@ -72,9 +72,8 @@ simpleEval (TimesE a b) = (simpleEval a) * (simpleEval b)
 -- Nothing
 
 opMaybe :: (Int -> Int -> Int) -> Maybe Int -> Maybe Int -> Maybe Int
-opMaybe op m1 m2 = case (m1, m2) of
-  (Just m1, Just m2) -> Just (op m1 m2)
-  _                  -> Nothing
+opMaybe op (Just m1) (Just m2) = Just (op m1 m2)
+opMaybe _ _ _                  = Nothing
 
 
 data VarExpr = PlusVE VarExpr VarExpr
