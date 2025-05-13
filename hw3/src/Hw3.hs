@@ -9,6 +9,7 @@
 module Hw3 where
 
 import Prelude hiding (lookup)
+import Text.Printf (printf)
 
 -- | The `Expr` data type represents simple arithmetic expressions.
 data Expr = PlusE Expr Expr
@@ -109,9 +110,9 @@ type ListEnv = [(String, Int)]
 varExprListEval :: ListEnv -> VarExpr -> Maybe Int
 varExprListEval _ (NumVE n)         = Just n
 varExprListEval env (Var s)         = varEval s env
-varExprListEval env (TimesVE e1 e2) = opMaybe (*) (varExprListEval env e1) (varExprListEval env e2)
-varExprListEval env (MinusVE e1 e2) = opMaybe (-) (varExprListEval env e1) (varExprListEval env e2)
 varExprListEval env (PlusVE e1 e2)  = opMaybe (+) (varExprListEval env e1) (varExprListEval env e2)
+varExprListEval env (MinusVE e1 e2) = opMaybe (-) (varExprListEval env e1) (varExprListEval env e2)
+varExprListEval env (TimesVE e1 e2) = opMaybe (*) (varExprListEval env e1) (varExprListEval env e2)
 
 varEval :: String -> ListEnv -> Maybe Int
 varEval _ []                         = Nothing
@@ -145,9 +146,9 @@ type FunEnv = String -> Maybe Int
 varExprFunEval :: FunEnv -> VarExpr -> Maybe Int
 varExprFunEval _ (NumVE n)         = Just n
 varExprFunEval env (Var s)         = env s
-varExprFunEval env (TimesVE e1 e2) = opMaybe (*) (varExprFunEval env e1) (varExprFunEval env e2)
-varExprFunEval env (MinusVE e1 e2) = opMaybe (-) (varExprFunEval env e1) (varExprFunEval env e2)
 varExprFunEval env (PlusVE e1 e2)  = opMaybe (+) (varExprFunEval env e1) (varExprFunEval env e2)
+varExprFunEval env (MinusVE e1 e2) = opMaybe (-) (varExprFunEval env e1) (varExprFunEval env e2)
+varExprFunEval env (TimesVE e1 e2) = opMaybe (*) (varExprFunEval env e1) (varExprFunEval env e2)
 
 
 -- | `show` takes a `VarExpr` and returns a printable string representation of it.
@@ -161,7 +162,7 @@ varExprFunEval env (PlusVE e1 e2)  = opMaybe (+) (varExprFunEval env e1) (varExp
 -- >>> show (PlusVE (NumVE 3) (MinusVE (NumVE 2) (NumVE 1)))
 -- "(3 + (2 - 1))"
 -- 
--- >>> show (TimesVE (TimesVE (NumE 4) (NumVE 6)) (PlusVE (NumVE 1) (NumVE 2)))
+-- >>> show (TimesVE (TimesVE (NumVE 4) (NumVE 6)) (PlusVE (NumVE 1) (NumVE 2)))
 -- "((4 * 6) * (1 + 2))"
 --
 -- >>> show (Var "x")
@@ -170,11 +171,14 @@ varExprFunEval env (PlusVE e1 e2)  = opMaybe (+) (varExprFunEval env e1) (varExp
 -- >>> show (TimesVE (Var "x") (PlusVE (NumVE 1) (Var "y")))
 -- "(x * (1 + y))"
 
+
 instance Show VarExpr where
   show :: VarExpr -> String
-  show expr = error "TBD: show"
-
-
+  show (NumVE n)       = printf "%d" n
+  show (Var s)         = s
+  show (PlusVE e1 e2)  = printf "(%s + %s)" (show e1) (show e2)
+  show (MinusVE e1 e2) = printf "(%s - %s)" (show e1) (show e2)
+  show (TimesVE e1 e2) = printf "(%s * %s)" (show e1) (show e2)
 
 
 -- | `(==)` takes two `VarExpr`s and compares them for equality,
