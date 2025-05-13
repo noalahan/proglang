@@ -143,9 +143,11 @@ type FunEnv = String -> Maybe Int
 -- Just 21
 
 varExprFunEval :: FunEnv -> VarExpr -> Maybe Int
-varExprFunEval env expr = error "TBD: varExprFunEval"
-
-
+varExprFunEval _ (NumVE n)         = Just n
+varExprFunEval env (Var s)         = env s
+varExprFunEval env (TimesVE e1 e2) = opMaybe (*) (varExprFunEval env e1) (varExprFunEval env e2)
+varExprFunEval env (MinusVE e1 e2) = opMaybe (-) (varExprFunEval env e1) (varExprFunEval env e2)
+varExprFunEval env (PlusVE e1 e2)  = opMaybe (+) (varExprFunEval env e1) (varExprFunEval env e2)
 
 
 -- | `show` takes a `VarExpr` and returns a printable string representation of it.
