@@ -195,12 +195,12 @@ instance Show VarExpr where
 -- True
 -- >>> Var "y" == Var "x"
 -- True
--- >>> (TimesVE (NumVE 7) (NumVE 3)) == (TimesVE (NumVE 7) (Var "x")))
+-- >>> (TimesVE (NumVE 7) (NumVE 3)) == (TimesVE (NumVE 7) (Var "x"))
 -- False
 
 instance Eq VarExpr where
   (==) :: VarExpr -> VarExpr -> Bool
-  (==) expr1 expr2 = error "TBD: (==)"
+  (==) expr1 expr2 = (varExprListEval [] expr1) == (varExprListEval [] expr2)
 
 
 
