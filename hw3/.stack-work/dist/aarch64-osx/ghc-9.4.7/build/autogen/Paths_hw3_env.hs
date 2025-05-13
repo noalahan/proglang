@@ -43,7 +43,7 @@ getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: 
 
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 bindir     = "/Users/noalahan/proglang/hw3/.stack-work/install/aarch64-osx/3f3d8ed7bed333209106ce7396fd8efd525956f5a23d6f7ff9ae36b407d365bf/9.4.7/bin"
-libdir     = "/Users/noalahan/proglang/hw3/.stack-work/install/aarch64-osx/3f3d8ed7bed333209106ce7396fd8efd525956f5a23d6f7ff9ae36b407d365bf/9.4.7/lib/aarch64-osx-ghc-9.4.7/hw3-env-0.1.0.0-KX3K4uan9cxGN1g0KB4oHl"
+libdir     = "/Users/noalahan/proglang/hw3/.stack-work/install/aarch64-osx/3f3d8ed7bed333209106ce7396fd8efd525956f5a23d6f7ff9ae36b407d365bf/9.4.7/lib/aarch64-osx-ghc-9.4.7/hw3-env-0.1.0.0-E7rx1Sx4UgB6SFFcJFUUB5"
 dynlibdir  = "/Users/noalahan/proglang/hw3/.stack-work/install/aarch64-osx/3f3d8ed7bed333209106ce7396fd8efd525956f5a23d6f7ff9ae36b407d365bf/9.4.7/lib/aarch64-osx-ghc-9.4.7"
 datadir    = "/Users/noalahan/proglang/hw3/.stack-work/install/aarch64-osx/3f3d8ed7bed333209106ce7396fd8efd525956f5a23d6f7ff9ae36b407d365bf/9.4.7/share/aarch64-osx-ghc-9.4.7/hw3-env-0.1.0.0"
 libexecdir = "/Users/noalahan/proglang/hw3/.stack-work/install/aarch64-osx/3f3d8ed7bed333209106ce7396fd8efd525956f5a23d6f7ff9ae36b407d365bf/9.4.7/libexec/aarch64-osx-ghc-9.4.7/hw3-env-0.1.0.0"

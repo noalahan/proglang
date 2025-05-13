@@ -31,7 +31,10 @@ data Expr = PlusE Expr Expr
 -- -6
 
 simpleEval :: Expr -> Int
-simpleEval expr = error "TBD: simpleEval"
+simpleEval (NumE n)     = n
+simpleEval (PlusE a b)  = (simpleEval a) + (simpleEval b)
+simpleEval (MinusE a b) = (simpleEval a) - (simpleEval b)
+simpleEval (TimesE a b) = (simpleEval a) * (simpleEval b)
 
 
 
