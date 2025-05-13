@@ -232,28 +232,28 @@ class Env a where
 
 instance Env ListEnv where
   emptyEnv :: ListEnv
-  emptyEnv = error "TBD: emptyEnv"
+  emptyEnv = []
 
 
   lookupInEnv :: String -> ListEnv -> Maybe Int
-  lookupInEnv s env = error "TBD: lookupInEnv"
-
+  lookupInEnv _ []                          = Nothing
+  lookupInEnv str ((s, n): xs) | str == s = Just n
+                               | otherwise = lookupInEnv str xs
 
   extendEnv :: String -> Int -> ListEnv -> ListEnv
-  extendEnv s n env = error "TBD: extendEnv"
+  extendEnv s n env = env ++ [(s, n)]
 
 instance Env FunEnv where
   emptyEnv :: FunEnv
-  emptyEnv = error "TBD: emptyEnv"
+  emptyEnv = (\v -> Nothing)
 
 
   lookupInEnv :: String -> FunEnv -> Maybe Int
-  lookupInEnv s env = error "TBD: lookupInEnv"
+  lookupInEnv s env = env s
 
 
   extendEnv :: String -> Int -> FunEnv -> FunEnv
-  extendEnv s n env = error "TBD: extendEnv"
-
+  extendEnv s n env = (\v -> if v == s then Just n else (env v))
 
 
 -- | `varExprEval` takes an expression `e` of type `VarExpr`
