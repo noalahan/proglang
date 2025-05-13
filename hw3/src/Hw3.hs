@@ -395,5 +395,5 @@ evalAll env exprs = map f exprs
 sumEval :: Env a => a -> [VarExpr] -> Maybe Int
 sumEval env exprs = foldr f (Just 0) exprs
   where f :: VarExpr -> Maybe Int -> Maybe Int
-        f expr m = error "TBD: sumEval"
+        f expr m = opMaybe (+) (varExprEval env expr) m
 
