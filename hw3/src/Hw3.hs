@@ -95,7 +95,7 @@ type ListEnv = [(String, Int)]
 -- Just 3
 --
 -- >>> varExprListEval [("x", 4), ("y", 7)] (PlusVE (Var "x") (MinusVE (NumVE 2) (Var "y")))
--- Just (-1)
+-- Just (-1) 
 --
 -- >>> varExprListEval [("x", 4), ("y", 7)] (TimesVE (Var "z") (NumVE 3))
 -- Nothing
@@ -107,11 +107,16 @@ type ListEnv = [(String, Int)]
 -- Just 21
 
 varExprListEval :: ListEnv -> VarExpr -> Maybe Int
-varExprListEval env expr = error "TBD: varEval"
+varExprListEval _ (NumVE n)         = Just n
+varExprListEval env (Var s)         = varEval s env
+varExprListEval env (TimesVE e1 e2) = opMaybe (*) (varExprListEval env e1) (varExprListEval env e2)
+varExprListEval env (MinusVE e1 e2) = opMaybe (-) (varExprListEval env e1) (varExprListEval env e2)
+varExprListEval env (PlusVE e1 e2)  = opMaybe (+) (varExprListEval env e1) (varExprListEval env e2)
 
-
-
-
+varEval :: String -> ListEnv -> Maybe Int
+varEval _ []                         = Nothing
+varEval name ((n, v):xs) | name == n = Just v
+                         | otherwise = varEval name xs
 
 type FunEnv = String -> Maybe Int
 
