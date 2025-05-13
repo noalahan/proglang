@@ -344,7 +344,7 @@ varExprEval env (TimesVE e1 e2) = opMaybe (*) (varExprEval env e1) (varExprEval 
 evalAll :: Env a => a -> [VarExpr] -> [Maybe Int]
 evalAll env exprs = map f exprs
   where f :: VarExpr -> Maybe Int
-        f expr = error "TBD: evalAll"
+        f expr = varExprEval env expr
 
 
 
