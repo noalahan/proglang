@@ -7,13 +7,13 @@
 /Users/noalahan/.ghcup/ghc/9.4.7/lib/ghc-9.4.7/lib/aarch64-osx-ghc-9.4.7/rts-1.0.2/include/ghcversion.h:
   hash: ee548d48ca5c94d7c7fab127ec07be47b01afa24d6495358aa9ff6cfc8541c81
 /Users/noalahan/proglang/hw4/.stack-work/dist/aarch64-osx/ghc-9.4.7/build/autogen/cabal_macros.h:
-  hash: 219ca6c3ca2704fd984ba8023b9ec1f2b5058eacb4717fe452fe812ba135e933
+  hash: 6fc1c4893f3ea62c063fee5da94d62a9834392d086645d4052a48c9f8664d63e
 /Users/noalahan/proglang/hw4/README.md:
   hash: 6264b349003c86363a3e1f24f3d8a0f5d80022eee13f4910aafc7551e0334783
 /Users/noalahan/proglang/hw4/hw4-nano.cabal:
   hash: 97670b8483ef358a625bdae38fa5a069246e1492303f30b80ab120830ecf9ce8
 /Users/noalahan/proglang/hw4/src/Language/Nano/Eval.hs:
-  hash: d0f2fa6fbce4079fb3c89545aeebf96521c4d4a0b84104a65a2874a3208a5a23
+  hash: 92c114407008777cb66d58b72c60134770ee8cb37da552a1d1433ead32560f29
 /Users/noalahan/proglang/hw4/src/Language/Nano/Lexer.x:
   hash: 46c3fc16b499cdcef6216be3be8ac45f66824d0f9e3dfe95fd47f3decba55a4a
 /Users/noalahan/proglang/hw4/src/Language/Nano/Parser.y:
