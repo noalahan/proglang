@@ -1,0 +1,22 @@
+/Users/noalahan/.ghcup/ghc/9.4.7/lib/ghc-9.4.7/lib/aarch64-osx-ghc-9.4.7/rts-1.0.2/include/ghcautoconf.h:
+  hash: 4b7fd9f9e2687ef0eccd54795bda6c24870cd00ec9297190b6d6ec6288f381e7
+/Users/noalahan/.ghcup/ghc/9.4.7/lib/ghc-9.4.7/lib/aarch64-osx-ghc-9.4.7/rts-1.0.2/include/ghcconfig.h:
+  hash: 03f4611ae97decc9e8c76c212bf7886d003b29d5c62b43fee6623a799f6e5fdf
+/Users/noalahan/.ghcup/ghc/9.4.7/lib/ghc-9.4.7/lib/aarch64-osx-ghc-9.4.7/rts-1.0.2/include/ghcplatform.h:
+  hash: 7d2f08f16a14d975742303660f1079c87b692248b026a31025c3e666aaaf6f45
+/Users/noalahan/.ghcup/ghc/9.4.7/lib/ghc-9.4.7/lib/aarch64-osx-ghc-9.4.7/rts-1.0.2/include/ghcversion.h:
+  hash: ee548d48ca5c94d7c7fab127ec07be47b01afa24d6495358aa9ff6cfc8541c81
+/Users/noalahan/proglang/hw4/.stack-work/dist/aarch64-osx/ghc-9.4.7/build/autogen/cabal_macros.h:
+  hash: 219ca6c3ca2704fd984ba8023b9ec1f2b5058eacb4717fe452fe812ba135e933
+/Users/noalahan/proglang/hw4/README.md:
+  hash: 6264b349003c86363a3e1f24f3d8a0f5d80022eee13f4910aafc7551e0334783
+/Users/noalahan/proglang/hw4/hw4-nano.cabal:
+  hash: 97670b8483ef358a625bdae38fa5a069246e1492303f30b80ab120830ecf9ce8
+/Users/noalahan/proglang/hw4/src/Language/Nano/Eval.hs:
+  hash: d0f2fa6fbce4079fb3c89545aeebf96521c4d4a0b84104a65a2874a3208a5a23
+/Users/noalahan/proglang/hw4/src/Language/Nano/Lexer.x:
+  hash: 46c3fc16b499cdcef6216be3be8ac45f66824d0f9e3dfe95fd47f3decba55a4a
+/Users/noalahan/proglang/hw4/src/Language/Nano/Parser.y:
+  hash: 67dd6fa35dd064b249a73c071db7ce5f7cbd81a3b6826dff6ba2d44c0d2b032c
+/Users/noalahan/proglang/hw4/src/Language/Nano/Types.hs:
+  hash: 1ff6810e08d5d280ce99fec40863c9ddc7d5e6aee1aef1906884840a69deef94
