@@ -172,7 +172,10 @@ eval = error "TBD:eval"
 --------------------------------------------------------------------------------
 evalOp :: Binop -> Value -> Value -> Value
 --------------------------------------------------------------------------------
-evalOp = error "TBD:evalOp"
+evalOp Plus  (VInt n1) (VInt n2) = VInt (n1 + n2)
+evalOp Minus (VInt n1) (VInt n2) = VInt (n1 - n2)
+evalOp Mul   (VInt n1) (VInt n2) = VInt (n1 * n2)
+evalOp _     _         _         = throw (Error ("op not supported"))
 
 --------------------------------------------------------------------------------
 -- | `lookupId x env` returns the most recent

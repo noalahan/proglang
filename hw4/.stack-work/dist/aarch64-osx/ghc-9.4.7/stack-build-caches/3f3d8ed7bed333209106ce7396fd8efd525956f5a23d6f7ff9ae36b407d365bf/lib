@@ -13,7 +13,7 @@
 /Users/noalahan/proglang/hw4/hw4-nano.cabal:
   hash: 97670b8483ef358a625bdae38fa5a069246e1492303f30b80ab120830ecf9ce8
 /Users/noalahan/proglang/hw4/src/Language/Nano/Eval.hs:
-  hash: 92c114407008777cb66d58b72c60134770ee8cb37da552a1d1433ead32560f29
+  hash: 82c5ad46b5f4b8d9da182f3e5776d37e923e14a320c9ff54ede632dbb1c4d734
 /Users/noalahan/proglang/hw4/src/Language/Nano/Lexer.x:
   hash: 46c3fc16b499cdcef6216be3be8ac45f66824d0f9e3dfe95fd47f3decba55a4a
 /Users/noalahan/proglang/hw4/src/Language/Nano/Parser.y:
