@@ -174,11 +174,12 @@ eval _   (EBool b)        = VBool b
 eval env (EIf e1 e2 e3)   = case (eval env e1) of
   VBool b -> if b then (eval env e2) else (eval env e3)
   _       -> throw (Error "type error: If Expr isn't a Bool")
-eval env (ELet id e1 e2)  = eval ((id,(eval env e1)):env) e2
+-- eval env (ELet id e1 e2)  = eval ((id,(eval env e1)):env) e2
+eval env (ELet id e1 e2)  = let l = eval ((id, l):env) e1 in eval ((id, l):env) e2
 eval env (ELam id e)      = VClos env id e
 eval env (EApp e1 e2)     = case (eval env e1) of
-  VClos env id e -> eval ((id, eval env e2):env) e
-  _              -> throw (Error "type error: App Expr isn't a Clos")
+  VClos l id e -> eval ((id, eval env e2):l) e
+  _            -> throw (Error "type error: App Expr isn't a Clos")
 eval _   _                = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
@@ -207,7 +208,7 @@ evalOp And v1 v2   = case (v1, v2) of
 evalOp Or v1 v2    = case (v1, v2) of
   (VBool b1, VBool b2) -> VBool (b1 || b2)
   _                    -> throw (Error "type error: Or without Bools")
-evalOp _     _         _         = throw (Error "op not supported")
+evalOp _ _ _       = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
 -- | `lookupId x env` returns the most recent
