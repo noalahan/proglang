@@ -174,6 +174,7 @@ eval _   (EBool b)        = VBool b
 eval env (EIf e1 e2 e3)   = case (eval env e1) of
   VBool b -> if b then (eval env e2) else (eval env e3)
   _       -> throw (Error "type error: If Expr isn't a Bool")
+eval env (ELet id e1 e2)  = eval ((id,(eval env e1)):env) e2
 eval _   _                = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
