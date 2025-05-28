@@ -170,15 +170,35 @@ eval :: Env -> Expr -> Value
 eval _   (EInt n)         = VInt n
 eval env (EVar id)        = lookupId id env
 eval env (EBin op e1 e2)  = evalOp op (eval env e1) (eval env e2)
-eval _   _                = throw (Error ("op not supported"))
+eval _   _                = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
 evalOp :: Binop -> Value -> Value -> Value
 --------------------------------------------------------------------------------
-evalOp Plus  (VInt n1) (VInt n2) = VInt (n1 + n2)
-evalOp Minus (VInt n1) (VInt n2) = VInt (n1 - n2)
-evalOp Mul   (VInt n1) (VInt n2) = VInt (n1 * n2)
-evalOp _     _         _         = throw (Error ("op not supported"))
+evalOp Plus v1 v2  = case (v1, v2) of
+  (VInt n1, VInt n2) -> VInt (n1 + n2)
+  _                  -> throw (Error "type error: Plus without Ints")
+evalOp Minus v1 v2 = case (v1, v2) of
+  (VInt n1, VInt n2) -> VInt (n1 - n2)
+  _                  -> throw (Error "type error: Minus without Ints")
+evalOp Mul v1 v2   = case (v1, v2) of
+  (VInt n1, VInt n2) -> VInt (n1 * n2)
+  _                  -> throw (Error "type error: Mul without Ints")
+evalOp Eq v1 v2 = VBool (v1 == v2)
+evalOp Ne v1 v2 = VBool (v1 /= v2)
+evalOp Lt v1 v2 = case (v1, v2) of
+  (VInt n1, VInt n2) -> VBool (n1 < n2)
+  _                  -> throw (Error "type error: Lt without Ints")
+evalOp Le v1 v2 = case (v1, v2) of
+  (VInt n1, VInt n2) -> VBool (n1 <= n2)
+  _                  -> throw (Error "type error: Le without Ints")
+evalOp And v1 v2 = case (v1, v2) of
+  (VBool b1, VBool b2) -> VBool (b1 && b2)
+  _                    -> throw (Error "type error: And without Bools")
+evalOp Or v1 v2  = case (v1, v2) of
+  (VBool b1, VBool b2) -> VBool (b1 || b2)
+  _                    -> throw (Error "type error: Or without Bools")
+evalOp _     _         _         = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
 -- | `lookupId x env` returns the most recent
