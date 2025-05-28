@@ -168,19 +168,19 @@ exitError (Error msg) = return (VErr msg)
 eval :: Env -> Expr -> Value
 --------------------------------------------------------------------------------
 eval _   (EInt n)         = VInt n
+eval _   (EBool b)        = VBool b
+eval _   (ENil)           = VNil
 eval env (EVar id)        = lookupId id env
 eval env (EBin op e1 e2)  = evalOp op (eval env e1) (eval env e2)
-eval _   (EBool b)        = VBool b
 eval env (EIf e1 e2 e3)   = case (eval env e1) of
   VBool b -> if b then (eval env e2) else (eval env e3)
   _       -> throw (Error "type error: If Expr isn't a Bool")
--- eval env (ELet id e1 e2)  = eval ((id,(eval env e1)):env) e2
 eval env (ELet id e1 e2)  = let l = eval ((id, l):env) e1 in eval ((id, l):env) e2
 eval env (ELam id e)      = VClos env id e
 eval env (EApp e1 e2)     = case (eval env e1) of
   VClos l id e -> eval ((id, eval env e2):l) e
+  VPrim f      -> f (eval env e2)
   _            -> throw (Error "type error: App Expr isn't a Clos")
-eval _   _                = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
 evalOp :: Binop -> Value -> Value -> Value
@@ -208,7 +208,7 @@ evalOp And v1 v2   = case (v1, v2) of
 evalOp Or v1 v2    = case (v1, v2) of
   (VBool b1, VBool b2) -> VBool (b1 || b2)
   _                    -> throw (Error "type error: Or without Bools")
-evalOp _ _ _       = throw (Error "op not supported")
+evalOp Cons v1 v2  = VPair v1 v2
 
 --------------------------------------------------------------------------------
 -- | `lookupId x env` returns the most recent
@@ -239,11 +239,21 @@ extendEnv :: Id -> Value -> Env -> Env
 --------------------------------------------------------------------------------
 extendEnv x v env = (x, v):env
 
+head' :: Value -> Value
+head' (VPair h _) = h
+head' VNil        = throw (Error "error: head on empty list")
+head' _           = throw (Error "type error: head without pair")
+
+tail' :: Value -> Value
+tail' (VPair _ t) = t
+tail' VNil        = throw (Error "error: tail on empty list")
+tail' _           = throw (Error "type error: tail without pair")
 
 prelude :: Env
 prelude =
   [ -- HINT: you may extend this "built-in" environment
-    -- with some "operators" that you find useful...
+    ("head", VPrim head'), 
+    ("tail", VPrim tail')
   ]
 
 env0 :: Env
