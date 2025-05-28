@@ -175,32 +175,36 @@ eval env (EIf e1 e2 e3)   = case (eval env e1) of
   VBool b -> if b then (eval env e2) else (eval env e3)
   _       -> throw (Error "type error: If Expr isn't a Bool")
 eval env (ELet id e1 e2)  = eval ((id,(eval env e1)):env) e2
+eval env (ELam id e)      = VClos env id e
+eval env (EApp e1 e2)     = case (eval env e1) of
+  VClos env id e -> eval ((id, eval env e2):env) e
+  _              -> throw (Error "type error: App Expr isn't a Clos")
 eval _   _                = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
 evalOp :: Binop -> Value -> Value -> Value
 --------------------------------------------------------------------------------
 evalOp Plus v1 v2  = case (v1, v2) of
-  (VInt n1, VInt n2) -> VInt (n1 + n2)
-  _                  -> throw (Error "type error: Plus without Ints")
+  (VInt n1, VInt n2)   -> VInt (n1 + n2)
+  _                    -> throw (Error "type error: Plus without Ints")
 evalOp Minus v1 v2 = case (v1, v2) of
-  (VInt n1, VInt n2) -> VInt (n1 - n2)
-  _                  -> throw (Error "type error: Minus without Ints")
+  (VInt n1, VInt n2)   -> VInt (n1 - n2)
+  _                    -> throw (Error "type error: Minus without Ints")
 evalOp Mul v1 v2   = case (v1, v2) of
-  (VInt n1, VInt n2) -> VInt (n1 * n2)
-  _                  -> throw (Error "type error: Mul without Ints")
-evalOp Eq v1 v2 = VBool (v1 == v2)
-evalOp Ne v1 v2 = VBool (v1 /= v2)
-evalOp Lt v1 v2 = case (v1, v2) of
-  (VInt n1, VInt n2) -> VBool (n1 < n2)
-  _                  -> throw (Error "type error: Lt without Ints")
-evalOp Le v1 v2 = case (v1, v2) of
-  (VInt n1, VInt n2) -> VBool (n1 <= n2)
-  _                  -> throw (Error "type error: Le without Ints")
-evalOp And v1 v2 = case (v1, v2) of
+  (VInt n1, VInt n2)   -> VInt (n1 * n2)
+  _                    -> throw (Error "type error: Mul without Ints")
+evalOp Eq v1 v2    = VBool (v1 == v2)
+evalOp Ne v1 v2    = VBool (v1 /= v2)
+evalOp Lt v1 v2    = case (v1, v2) of
+  (VInt n1, VInt n2)   -> VBool (n1 < n2)
+  _                    -> throw (Error "type error: Lt without Ints")
+evalOp Le v1 v2    = case (v1, v2) of
+  (VInt n1, VInt n2)   -> VBool (n1 <= n2)
+  _                    -> throw (Error "type error: Le without Ints")
+evalOp And v1 v2   = case (v1, v2) of
   (VBool b1, VBool b2) -> VBool (b1 && b2)
   _                    -> throw (Error "type error: And without Bools")
-evalOp Or v1 v2  = case (v1, v2) of
+evalOp Or v1 v2    = case (v1, v2) of
   (VBool b1, VBool b2) -> VBool (b1 || b2)
   _                    -> throw (Error "type error: Or without Bools")
 evalOp _     _         _         = throw (Error "op not supported")
