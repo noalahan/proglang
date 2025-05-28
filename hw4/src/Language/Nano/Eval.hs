@@ -167,7 +167,10 @@ exitError (Error msg) = return (VErr msg)
 --------------------------------------------------------------------------------
 eval :: Env -> Expr -> Value
 --------------------------------------------------------------------------------
-eval = error "TBD:eval"
+eval _   (EInt n)         = VInt n
+eval env (EVar id)        = lookupId id env
+eval env (EBin op e1 e2)  = evalOp op (eval env e1) (eval env e2)
+eval _   _                = throw (Error ("op not supported"))
 
 --------------------------------------------------------------------------------
 evalOp :: Binop -> Value -> Value -> Value
