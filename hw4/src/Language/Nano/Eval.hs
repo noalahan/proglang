@@ -170,6 +170,10 @@ eval :: Env -> Expr -> Value
 eval _   (EInt n)         = VInt n
 eval env (EVar id)        = lookupId id env
 eval env (EBin op e1 e2)  = evalOp op (eval env e1) (eval env e2)
+eval _   (EBool b)        = VBool b
+eval env (EIf e1 e2 e3)   = case (eval env e1) of
+  VBool b -> if b then (eval env e2) else (eval env e3)
+  _       -> throw (Error "type error: If Expr isn't a Bool")
 eval _   _                = throw (Error "op not supported")
 
 --------------------------------------------------------------------------------
