@@ -81,12 +81,17 @@ class Substitutable a where
 -- | Apply substitution to type
 instance Substitutable Type where  
   apply :: Subst -> Type -> Type
-  apply sub t         = error "TBD: type apply"
+  apply _   TInt        = TInt
+  apply _   TBool       = TBool
+  apply sub (t1 :=> t2) = (apply sub t1) :=> (apply sub t2)
+  apply sub (TVar id)   = lookupTVar id sub
+  apply sub (TList t)   = TList (apply sub t)
 
 -- | Apply substitution to poly-type
 instance Substitutable Poly where    
   apply :: Subst -> Poly -> Poly
-  apply sub s         = error "TBD: poly apply"
+  apply sub (Mono t)      = Mono (apply sub t)
+  apply sub (Forall id t) = Forall id (apply (removeTVar id sub) t)
 
 -- | Apply substitution to (all poly-types in) another substitution
 instance Substitutable Subst where  
