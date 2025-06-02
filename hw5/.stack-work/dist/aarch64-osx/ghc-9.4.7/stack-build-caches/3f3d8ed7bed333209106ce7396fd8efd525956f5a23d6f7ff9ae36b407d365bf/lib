@@ -1,0 +1,12 @@
+/Users/noalahan/proglang/hw5/README.md:
+  hash: 7b629e09f69d5acaed02ca3d6ef17eb238c39b19eb96715269e518b4ff463725
+/Users/noalahan/proglang/hw5/hw5-types.cabal:
+  hash: fc29ec670d5ba50a8c4184248f7813ae50c287fc71e9a4bd74e6fb99ffc1319d
+/Users/noalahan/proglang/hw5/src/Language/Nano/Eval.hs:
+  hash: 7862d95748019fbacf671e86a75c138ccec0e20188fed396fc18baa30c6ba9e5
+/Users/noalahan/proglang/hw5/src/Language/Nano/Parser.hs:
+  hash: 5bbc5da2492987087fc171a4a70b74c9c00e45387422929e937ea03c7f85d2df
+/Users/noalahan/proglang/hw5/src/Language/Nano/TypeCheck.hs:
+  hash: 9e13da643cfc3b9be0fb421f5c39c97899432902f2bb7d1b2f20d6c9ebcbe3be
+/Users/noalahan/proglang/hw5/src/Language/Nano/Types.hs:
+  hash: c2e912f2a00407ba757beb944d6bfac6e93df964b2150cb04155d58b84c276a1
