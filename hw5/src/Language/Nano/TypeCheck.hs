@@ -138,8 +138,14 @@ extendState (InferState sub n) a t = InferState (extendSubst sub a t) n
 -- | Unify a type variable with a type; 
 --   if successful return an updated state, otherwise throw an error
 unifyTVar :: InferState -> TId -> Type -> InferState
-unifyTVar st a t = error "TBD: unifyTVar"
-    
+unifyTVar st a (TVar id) = if a == id then st else extendState st a (TVar id)
+unifyTVar st a t | occurs a (freeTVars t) = throw (Error ("type error: cannot unify " ++ a ++ " and " ++ show t ++ " (occurs check)"))
+                 | otherwise = extendState st a t
+  where
+    occurs :: TId -> [TId] -> Bool
+    occurs id [] = False
+    occurs id (x:xs) = if id == x then True else occurs id xs
+
 -- | Unify two types;
 --   if successful return an updated state, otherwise throw an error
 unify :: InferState -> Type -> Type -> InferState
