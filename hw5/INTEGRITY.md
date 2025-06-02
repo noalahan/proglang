@@ -1,3 +1,3 @@
 I incorporated elements from the following sources into my assignment submission.
 
-* Did not use any external resources (other than lecture notes)
+* Used LYAH ch 8.2 ("Record Syntax") to understand the InferState record before answering part 2

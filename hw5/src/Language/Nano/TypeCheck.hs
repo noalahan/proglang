@@ -138,18 +138,29 @@ extendState (InferState sub n) a t = InferState (extendSubst sub a t) n
 -- | Unify a type variable with a type; 
 --   if successful return an updated state, otherwise throw an error
 unifyTVar :: InferState -> TId -> Type -> InferState
-unifyTVar st a (TVar id) = if a == id then st else extendState st a (TVar id)
+unifyTVar st a (TVar id)                  = if a == id then st else extendState st a (TVar id)
 unifyTVar st a t | occurs a (freeTVars t) = throw (Error ("type error: cannot unify " ++ a ++ " and " ++ show t ++ " (occurs check)"))
-                 | otherwise = extendState st a t
+                 | otherwise              = extendState st a t
   where
     occurs :: TId -> [TId] -> Bool
-    occurs id [] = False
+    occurs id []     = False
     occurs id (x:xs) = if id == x then True else occurs id xs
 
 -- | Unify two types;
 --   if successful return an updated state, otherwise throw an error
 unify :: InferState -> Type -> Type -> InferState
-unify st t1 t2 = error "TBD: unify"
+unify st (TVar a) t = unifyTVar st a t
+unify st t (TVar a) = unifyTVar st a t
+unify st TInt t     = if t == TInt then st else throw (Error ("type error: cannot unify Int and " ++ show t))
+unify st t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " and Int"))
+unify st TBool t    = if t == TBool then st else throw (Error ("type error: cannot unify Bool and " ++ show t))
+unify st t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
+unify st (TList t1) (TList t2) = unify st t1 t2
+unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply (getSub s) res1) (apply (getSub s) res2)
+  where
+    s = (unify st arg1 arg2)
+    getSub :: InferState -> Subst
+    getSub (InferState sub _) = sub
 
 --------------------------------------------------------------------------------
 -- Problem 3: Type Inference
