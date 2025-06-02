@@ -109,7 +109,11 @@ instance Substitutable TypeEnv where
       
 -- | Extend substitution with a new type assignment
 extendSubst :: Subst -> TId -> Type -> Subst
-extendSubst sub a t = error "TBD: extendSubst"
+extendSubst sub a t = (a, (apply sub t)):(clean sub)
+  where
+    clean :: Subst -> Subst
+    clean [] = []
+    clean ((id, subt):xs) = (id, apply [(a, t)] subt):(clean xs)
       
 --------------------------------------------------------------------------------
 -- Problem 2: Unification
