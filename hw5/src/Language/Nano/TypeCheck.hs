@@ -156,21 +156,32 @@ unify st t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " a
 unify st TBool t    = if t == TBool then st else throw (Error ("type error: cannot unify Bool and " ++ show t))
 unify st t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
 unify st (TList t1) (TList t2) = unify st t1 t2
-unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply (getSub s) res1) (apply (getSub s) res2)
+unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply (fst (getSt s)) res1) (apply (fst (getSt s)) res2)
   where
     s = (unify st arg1 arg2)
-    getSub :: InferState -> Subst
-    getSub (InferState sub _) = sub
+    -- getSub :: InferState -> Subst
+    -- getSub (InferState sub _) = sub
 
 --------------------------------------------------------------------------------
 -- Problem 3: Type Inference
 --------------------------------------------------------------------------------    
-  
+getSt :: InferState -> (Subst, Int)
+getSt (InferState sub cnt) = (sub, cnt)
+
 infer :: InferState -> TypeEnv -> Expr -> (InferState, Type)
-infer st _   (EInt _)          = error "TBD: infer EInt"
-infer st _   (EBool _)         = error "TBD: infer EBool"
-infer st gamma (EVar x)        = error "TBD: infer EVar"
-infer st gamma (ELam x body)   = error "TBD: infer ELam"
+infer st _   (EInt _)          = (st, TInt)
+infer st _   (EBool _)         = (st, TBool)
+infer st gamma (EVar x)        = case (lookupVarType x gamma) of
+  Mono t -> (st, t)
+  _      -> throw (Error ("type error: cannot infer Forall types"))
+infer st gamma (ELam x body)   = (newSt, apply (fst (getSt newSt)) t :=> snd (infer newSt newGm body)) 
+  where
+    t = freshTV (snd (getSt st))
+    newSt = extendState st x t   -- will it cause an issue that im not updating here?
+    newGm = extendTypeEnv x (Mono t) gamma
+    -- getCnt :: InferState -> Int
+    -- getCnt (InferState _ cnt) = cnt
+
 infer st gamma (EApp e1 e2)    = error "TBD: infer EApp"
 infer st gamma (ELet x e1 e2)  = error "TBD: infer ELet"
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
