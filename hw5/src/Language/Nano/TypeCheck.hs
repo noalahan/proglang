@@ -70,7 +70,7 @@ lookupTVar a ((id, t):xs) = if a == id then t else lookupTVar a xs
 
 -- | Remove a type variable from a substitution
 removeTVar :: TId -> Subst -> Subst
-removeTVar a []           = []
+removeTVar _ []           = []
 removeTVar a ((id, t):xs) = if a == id then removeTVar a xs 
                                        else (id, t):(removeTVar a xs)
      
@@ -143,7 +143,7 @@ unifyTVar st a t | occurs a (freeTVars t) = throw (Error ("type error: cannot un
                  | otherwise              = extendState st a t
   where
     occurs :: TId -> [TId] -> Bool
-    occurs id []     = False
+    occurs _  []     = False
     occurs id (x:xs) = if id == x then True else occurs id xs
 
 -- | Unify two types;
@@ -152,9 +152,9 @@ unify :: InferState -> Type -> Type -> InferState
 unify st (TVar a) t = unifyTVar st a t
 unify st t (TVar a) = unifyTVar st a t
 unify st TInt t     = if t == TInt then st else throw (Error ("type error: cannot unify Int and " ++ show t))
-unify st t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " and Int"))
+unify _  t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " and Int"))
 unify st TBool t    = if t == TBool then st else throw (Error ("type error: cannot unify Bool and " ++ show t))
-unify st t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
+unify _  t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
 unify st (TList t1) (TList t2) = unify st t1 t2
 unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply sub res1) (apply sub res2)
   where
@@ -172,13 +172,14 @@ infer :: InferState -> TypeEnv -> Expr -> (InferState, Type)
 infer st _   (EInt _)          = (st, TInt)
 infer st _   (EBool _)         = (st, TBool)
 infer st gamma (EVar x)        = case (lookupVarType x gamma) of
-  Mono t      -> (st, t)
-  Forall id t -> (st, snd (instantiate 0 t))
-infer st gamma (ELam x body)   = (newSt, apply (fst (getSt newSt)) t :=> snd (infer newSt newGm body)) 
+  Mono t     -> (st, t)
+  Forall _ t -> (st, snd (instantiate (snd (getSt st)) t))
+infer st gamma (ELam x body)   = (newSt, apply (fst (getSt stBody)) t :=> tBody) 
   where
     t = freshTV (snd (getSt st))
     newSt = extendState st x t   -- will it cause an issue that im not updating here?
     newGm = extendTypeEnv x (Mono t) gamma
+    (stBody, tBody) = infer newSt newGm body
 infer st gamma (EApp e1 e2)    = (unified, apply (fst (getSt unified)) t)
   where
     infE1 = infer st gamma e1
@@ -186,16 +187,11 @@ infer st gamma (EApp e1 e2)    = (unified, apply (fst (getSt unified)) t)
     t = freshTV (snd (getSt st))
     newSt = extendState st "res" t
     unified = unify newSt (snd infE1) ((snd infE2) :=> t)
-infer st gamma (ELet x e1 e2)  = infer newSt newGm e2
+infer st gamma (ELet x e1 e2)  = infer ste1 newGm e2
   where
     (ste1, te1) = infer st gamma e1
-    newSt = extendState ste1 x te1
-    newGm = extendTypeEnv x (Mono te1) gamma
--- infer st gamma (ELet x e1 e2)  = infer newSt newGm e2
---   where
---     e1Type = snd (infer st gamma e1)
---     newSt = extendState st x e1Type
---     newGm = extendTypeEnv x (Mono e1Type) gamma
+    -- newSt = extendState ste1 x te1
+    newGm = extendTypeEnv x (generalize gamma te1) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
@@ -226,19 +222,19 @@ instantiate n s = helper n [] s
 preludeTypes :: TypeEnv
 preludeTypes =
   [ ("+",    Mono (TInt :=> TInt :=> TInt))
-  , ("-",    error "TBD: -")
-  , ("*",    error "TBD: *")
-  , ("/",    error "TBD: /")
-  , ("==",   error "TBD: ==")
-  , ("!=",   error "TBD: !=")
-  , ("<",    error "TBD: <")
-  , ("<=",   error "TBD: <=")
-  , ("&&",   error "TBD: &&")
-  , ("||",   error "TBD: ||")
-  , ("if",   error "TBD: if")
+  , ("-",    Mono (TInt :=> TInt :=> TInt))
+  , ("*",    Mono (TInt :=> TInt :=> TInt))
+  , ("/",    Mono (TInt :=> TInt :=> TInt))
+  , ("==",   Forall "a" (Mono ((TVar "a") :=> (TVar "a") :=> TBool)))
+  , ("!=",   Forall "a" (Mono ((TVar "a") :=> (TVar "a") :=> TBool)))
+  , ("<",    Mono (TInt :=> TInt :=> TBool))
+  , ("<=",   Mono (TInt :=> TInt :=> TBool))
+  , ("&&",   Mono (TBool :=> TBool :=> TBool))
+  , ("||",   Mono (TBool :=> TBool :=> TBool))
+  , ("if",   Forall "a" (Mono (TBool :=> (TVar "a") :=> (TVar "a") :=> (TVar "a"))))
   -- lists: 
-  , ("[]",   error "TBD: []")
-  , (":",    error "TBD: :")
-  , ("head", error "TBD: head")
-  , ("tail", error "TBD: tail")
+  , ("[]",   Forall "a" (Mono (TList (TVar "a"))))
+  , (":",    Forall "a" (Mono ((TVar "a") :=> TList (TVar "a") :=> TList (TVar "a"))))
+  , ("head", Forall "a" (Mono (TList (TVar "a") :=> (TVar "a"))))
+  , ("tail", Forall "a" (Mono (TList (TVar "a") :=> (TVar "a"))))
   ]
