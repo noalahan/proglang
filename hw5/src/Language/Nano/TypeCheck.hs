@@ -203,7 +203,12 @@ infer st gamma ENil = infer st gamma (EVar "[]")
 
 -- | Generalize type variables inside a type
 generalize :: TypeEnv -> Type -> Poly
-generalize gamma t = error "TBD: generalize"
+generalize gamma t = wrap ((freeTVars t) L.\\ (freeTVars gamma)) t
+  where
+    wrap :: [TId] -> Type -> Poly
+    wrap [] t = Mono t
+    wrap (x:xs) t = Forall x (wrap xs t)
+  
     
 -- | Instantiate a polymorphic type into a mono-type with fresh type variables
 instantiate :: Int -> Poly -> (Int, Type)
