@@ -156,42 +156,46 @@ unify _  t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " a
 unify st TBool t    = if t == TBool then st else throw (Error ("type error: cannot unify Bool and " ++ show t))
 unify _  t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
 unify st (TList t1) (TList t2) = unify st t1 t2
-unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply sub res1) (apply sub res2)
+unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply (stSub s) res1) (apply (stSub s) res2)
   where
     s = unify st arg1 arg2
-    sub = fst (getSt s)
-
 
 --------------------------------------------------------------------------------
 -- Problem 3: Type Inference
 --------------------------------------------------------------------------------    
-getSt :: InferState -> (Subst, Int)
-getSt (InferState sub cnt) = (sub, cnt)
 
 infer :: InferState -> TypeEnv -> Expr -> (InferState, Type)
 infer st _   (EInt _)          = (st, TInt)
 infer st _   (EBool _)         = (st, TBool)
 infer st gamma (EVar x)        = case (lookupVarType x gamma) of
   Mono t     -> (st, t)
-  Forall _ t -> (st, snd (instantiate (snd (getSt st)) t))
-infer st gamma (ELam x body)   = (newSt, apply (fst (getSt stBody)) t :=> tBody) 
+  Forall _ t -> (st, snd (instantiate (stCnt st) t))
+infer st gamma (ELam x body)   = (st2, apply (stSub st2) arg :=> res) 
   where
-    t = freshTV (snd (getSt st))
-    newSt = extendState st x t   -- will it cause an issue that im not updating here?
-    newGm = extendTypeEnv x (Mono t) gamma
-    (stBody, tBody) = infer newSt newGm body
-infer st gamma (EApp e1 e2)    = (unified, apply (fst (getSt unified)) t)
+    arg = freshTV (stCnt st)
+    st1 = extendState st x arg   -- will it cause an issue that im not updating here?
+    gamma' = extendTypeEnv x (Mono arg) gamma
+    (st2, res) = infer st1 gamma' body
+infer st gamma (EApp e1 e2)    = (unified, apply (stSub unified) t)
   where
-    infE1 = infer st gamma e1
-    infE2 = infer (fst infE1) gamma e2
-    t = freshTV (snd (getSt st))
+    t = freshTV (stCnt st)
+    (st1, t1) = infer st gamma e1
+    (st2, t2) = infer st1 gamma e2
     newSt = extendState st "res" t
-    unified = unify newSt (snd infE1) ((snd infE2) :=> t)
-infer st gamma (ELet x e1 e2)  = infer ste1 newGm e2
+    unified = unify newSt t1 (t2 :=> t)
+-- infer st gamma (EApp e1 e2)    = (st4, apply (stSub st4) t)
+--   where
+--     (st1, t1) = infer st gamma e1
+--     (st2, t2) = infer st1 gamma e2
+--     t       = freshTV (stCnt st2)
+--     st3 = extendState st2 "res" t
+--     st4 = unify st3 t1 (t2 :=> t)
+--     -- ** gamma' = apply (stSub st2) gamma
+infer st gamma (ELet x e1 e2)  = infer st1 newGm e2
   where
-    (ste1, te1) = infer st gamma e1
-    -- newSt = extendState ste1 x te1
-    newGm = extendTypeEnv x (generalize gamma te1) gamma
+    (st1, t1) = infer st gamma e1
+    -- newSt = extendState st1 x t1
+    newGm = extendTypeEnv x (generalize gamma t1) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
@@ -234,7 +238,8 @@ preludeTypes =
   , ("if",   Forall "a" (Mono (TBool :=> (TVar "a") :=> (TVar "a") :=> (TVar "a"))))
   -- lists: 
   , ("[]",   Forall "a" (Mono (TList (TVar "a"))))
-  , (":",    Forall "a" (Mono ((TVar "a") :=> TList (TVar "a") :=> TList (TVar "a"))))
-  , ("head", Forall "a" (Mono (TList (TVar "a") :=> (TVar "a"))))
-  , ("tail", Forall "a" (Mono (TList (TVar "a") :=> (TVar "a"))))
+  , (":",    Forall "a" (Mono ((TVar "a") :=> (TList (TVar "a")) :=> (TList (TVar "a")))))
+  , ("head", Forall "a" (Mono ((TList (TVar "a")) :=> (TVar "a"))))
+  , ("tail", Forall "a" (Mono ((TList (TVar "a")) :=> (TVar "a"))))
   ]
+
