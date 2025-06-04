@@ -156,11 +156,11 @@ unify st t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " a
 unify st TBool t    = if t == TBool then st else throw (Error ("type error: cannot unify Bool and " ++ show t))
 unify st t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
 unify st (TList t1) (TList t2) = unify st t1 t2
-unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply (fst (getSt s)) res1) (apply (fst (getSt s)) res2)
+unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply sub res1) (apply sub res2)
   where
-    s = (unify st arg1 arg2)
-    -- getSub :: InferState -> Subst
-    -- getSub (InferState sub _) = sub
+    s = unify st arg1 arg2
+    sub = fst (getSt s)
+
 
 --------------------------------------------------------------------------------
 -- Problem 3: Type Inference
@@ -179,11 +179,18 @@ infer st gamma (ELam x body)   = (newSt, apply (fst (getSt newSt)) t :=> snd (in
     t = freshTV (snd (getSt st))
     newSt = extendState st x t   -- will it cause an issue that im not updating here?
     newGm = extendTypeEnv x (Mono t) gamma
-    -- getCnt :: InferState -> Int
-    -- getCnt (InferState _ cnt) = cnt
-
-infer st gamma (EApp e1 e2)    = error "TBD: infer EApp"
-infer st gamma (ELet x e1 e2)  = error "TBD: infer ELet"
+infer st gamma (EApp e1 e2)    = (unified, apply (fst (getSt unified)) t)
+  where
+    infE1 = infer st gamma e1
+    infE2 = infer (fst infE1) gamma e2
+    t = freshTV (snd (getSt st))
+    newSt = extendState st "res" t
+    unified = unify newSt (snd infE1) ((snd infE2) :=> t)
+infer st gamma (ELet x e1 e2)  = infer newSt newGm e2
+  where
+    e1Type = snd (infer st gamma e1)
+    newSt = extendState st x e1Type
+    newGm = extendTypeEnv x (Mono e1Type) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
