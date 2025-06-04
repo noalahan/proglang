@@ -172,8 +172,8 @@ infer :: InferState -> TypeEnv -> Expr -> (InferState, Type)
 infer st _   (EInt _)          = (st, TInt)
 infer st _   (EBool _)         = (st, TBool)
 infer st gamma (EVar x)        = case (lookupVarType x gamma) of
-  Mono t -> (st, t)
-  _      -> throw (Error ("type error: cannot infer Forall types"))
+  Mono t      -> (st, t)
+  Forall id t -> (st, snd (instantiate 0 t))
 infer st gamma (ELam x body)   = (newSt, apply (fst (getSt newSt)) t :=> snd (infer newSt newGm body)) 
   where
     t = freshTV (snd (getSt st))
@@ -188,14 +188,19 @@ infer st gamma (EApp e1 e2)    = (unified, apply (fst (getSt unified)) t)
     unified = unify newSt (snd infE1) ((snd infE2) :=> t)
 infer st gamma (ELet x e1 e2)  = infer newSt newGm e2
   where
-    e1Type = snd (infer st gamma e1)
-    newSt = extendState st x e1Type
-    newGm = extendTypeEnv x (Mono e1Type) gamma
+    (ste1, te1) = infer st gamma e1
+    newSt = extendState ste1 x te1
+    newGm = extendTypeEnv x (Mono te1) gamma
+-- infer st gamma (ELet x e1 e2)  = infer newSt newGm e2
+--   where
+--     e1Type = snd (infer st gamma e1)
+--     newSt = extendState st x e1Type
+--     newGm = extendTypeEnv x (Mono e1Type) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
     opVar = EVar (show op)
-infer st gamma (EIf c e1 e2) = infer st gamma asApp
+infer st gamma (EIf c e1 e2)   = infer st gamma asApp
   where
     asApp = EApp (EApp (EApp ifVar c) e1) e2
     ifVar = EVar "if"    
@@ -208,7 +213,6 @@ generalize gamma t = wrap ((freeTVars t) L.\\ (freeTVars gamma)) t
     wrap :: [TId] -> Type -> Poly
     wrap [] t = Mono t
     wrap (x:xs) t = Forall x (wrap xs t)
-  
     
 -- | Instantiate a polymorphic type into a mono-type with fresh type variables
 instantiate :: Int -> Poly -> (Int, Type)
