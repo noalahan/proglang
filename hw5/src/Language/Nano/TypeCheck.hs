@@ -171,7 +171,9 @@ infer st _   (EInt _)          = (st, TInt)
 infer st _   (EBool _)         = (st, TBool)
 infer st gamma (EVar x)        = case (lookupVarType x gamma) of
   Mono t     -> (st, t)
-  Forall _ t -> (st, snd (instantiate (stCnt st) t))
+  Forall _ p -> (st {stCnt = n}, t)
+    where
+      (n, t) = instantiate (stCnt st) p
 infer st gamma (ELam x body) = (st2, apply (stSub st2) arg :=> res)
   where
     arg = freshTV (stCnt st)
@@ -190,7 +192,7 @@ infer st gamma (ELet x e1 e2)  = infer st1 gamma' e2
   where
     (st1, t1) = infer st gamma e1
     -- newSt = extendState st1 x t1
-    gamma' = extendTypeEnv x (Mono t1) gamma
+    gamma' = extendTypeEnv x (generalize gamma t1) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
