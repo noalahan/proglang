@@ -186,10 +186,14 @@ infer st gamma (EApp e1 e2)    = (st4, apply (stSub st4) res)
     res        = freshTV (stCnt st2) -- the result
     st3        = st2 { stCnt = stCnt st2 + 1 }
     st4        = unify st3 f (arg :=> res)
-infer st gamma (ELet x e1 e2)  = infer st1 gamma' e2
+infer st gamma (ELet x e1 e2)  = infer st3 gamma2 e2
   where
-    (st1, t1) = infer st gamma e1
-    gamma'    = extendTypeEnv x (generalize gamma t1) gamma
+    t = freshTV (stCnt st)
+    st1 = st { stCnt = stCnt st + 1}
+    gamma1 = extendTypeEnv x (Mono t) gamma
+    (st2, t1) = infer st1 gamma1 e1
+    st3 = unify st2 t1 (apply (stSub st2) t)
+    gamma2    = extendTypeEnv x (generalize gamma1 t1) gamma1
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
