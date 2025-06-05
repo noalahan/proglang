@@ -187,11 +187,9 @@ infer st gamma (EApp e1 e2)    = (st4, apply (stSub st4) res)
     res = freshTV (stCnt st2)         -- the result
     st3 = st2 { stCnt = stCnt st2 + 1 }
     st4 = unify st3 f (arg :=> res)
--- infer st gamma (ELet x e1 e2)    = throw (Error ("TBD: ELet"))
 infer st gamma (ELet x e1 e2)  = infer st1 gamma' e2
   where
     (st1, t1) = infer st gamma e1
-    -- newSt = extendState st1 x t1
     gamma' = extendTypeEnv x (generalize gamma t1) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
@@ -237,6 +235,6 @@ preludeTypes =
   , ("[]",   Forall "a" (Mono (TList (TVar "a"))))
   , (":",    Forall "a" (Mono ((TVar "a") :=> (TList (TVar "a")) :=> (TList (TVar "a")))))
   , ("head", Forall "a" (Mono ((TList (TVar "a")) :=> (TVar "a"))))
-  , ("tail", Forall "a" (Mono ((TList (TVar "a")) :=> (TVar "a"))))
+  , ("tail", Forall "a" (Mono ((TList (TVar "a")) :=> (TList (TVar "a")))))
   ]
 
