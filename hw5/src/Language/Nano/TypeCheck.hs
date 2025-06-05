@@ -171,26 +171,25 @@ infer st _   (EInt _)          = (st, TInt)
 infer st _   (EBool _)         = (st, TBool)
 infer st gamma (EVar x)        = case (lookupVarType x gamma) of
   Mono t     -> (st, t)
-  Forall _ p -> (st {stCnt = n}, t)
-    where
-      (n, t) = instantiate (stCnt st) p
-infer st gamma (ELam x body) = (st2, apply (stSub st2) arg :=> res)
+  p          -> (st {stCnt = n}, t)
+    where (n, t) = instantiate (stCnt st) p
+infer st gamma (ELam x body)   = (st2, apply (stSub st2) arg :=> res)
   where
-    arg = freshTV (stCnt st)
-    st1 = st { stCnt = stCnt st + 1 }
-    gamma' = extendTypeEnv x (Mono arg) gamma
+    arg        = freshTV (stCnt st)
+    st1        = st { stCnt = stCnt st + 1 }
+    gamma'     = extendTypeEnv x (Mono arg) gamma
     (st2, res) = infer st1 gamma' body
 infer st gamma (EApp e1 e2)    = (st4, apply (stSub st4) res)
   where
-    (st1, f) = infer st gamma e1   -- the function
+    (st1, f)   = infer st gamma e1   -- the function
     (st2, arg) = infer st1 gamma e2  -- the argument
-    res = freshTV (stCnt st2)         -- the result
-    st3 = st2 { stCnt = stCnt st2 + 1 }
-    st4 = unify st3 f (arg :=> res)
+    res        = freshTV (stCnt st2) -- the result
+    st3        = st2 { stCnt = stCnt st2 + 1 }
+    st4        = unify st3 f (arg :=> res)
 infer st gamma (ELet x e1 e2)  = infer st1 gamma' e2
   where
     (st1, t1) = infer st gamma e1
-    gamma' = extendTypeEnv x (generalize gamma t1) gamma
+    gamma'    = extendTypeEnv x (generalize gamma t1) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
@@ -199,7 +198,7 @@ infer st gamma (EIf c e1 e2)   = infer st gamma asApp
   where
     asApp = EApp (EApp (EApp ifVar c) e1) e2
     ifVar = EVar "if"    
-infer st gamma ENil = infer st gamma (EVar "[]")
+infer st gamma ENil            = infer st gamma (EVar "[]")
 
 -- | Generalize type variables inside a type
 generalize :: TypeEnv -> Type -> Poly
