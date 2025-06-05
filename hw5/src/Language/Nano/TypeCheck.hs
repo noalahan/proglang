@@ -172,32 +172,25 @@ infer st _   (EBool _)         = (st, TBool)
 infer st gamma (EVar x)        = case (lookupVarType x gamma) of
   Mono t     -> (st, t)
   Forall _ t -> (st, snd (instantiate (stCnt st) t))
-infer st gamma (ELam x body)   = (st2, apply (stSub st2) arg :=> res) 
+infer st gamma (ELam x body) = (st2, apply (stSub st2) arg :=> res)
   where
     arg = freshTV (stCnt st)
-    st1 = extendState st x arg   -- will it cause an issue that im not updating here?
+    st1 = st { stCnt = stCnt st + 1 }
     gamma' = extendTypeEnv x (Mono arg) gamma
     (st2, res) = infer st1 gamma' body
-infer st gamma (EApp e1 e2)    = (unified, apply (stSub unified) t)
+infer st gamma (EApp e1 e2)    = (st4, apply (stSub st4) res)
   where
-    t = freshTV (stCnt st)
-    (st1, t1) = infer st gamma e1
-    (st2, t2) = infer st1 gamma e2
-    newSt = extendState st "res" t
-    unified = unify newSt t1 (t2 :=> t)
--- infer st gamma (EApp e1 e2)    = (st4, apply (stSub st4) t)
+    (st1, f) = infer st gamma e1   -- the function
+    (st2, arg) = infer st1 gamma e2  -- the argument
+    res = freshTV (stCnt st2)         -- the result
+    st3 = st2 { stCnt = stCnt st2 + 1 }
+    st4 = unify st3 f (arg :=> res)
+infer st gamma (ELet x e1 e2)    = throw (Error ("TBD: ELet"))
+-- infer st gamma (ELet x e1 e2)  = infer st1 newGm e2
 --   where
 --     (st1, t1) = infer st gamma e1
---     (st2, t2) = infer st1 gamma e2
---     t       = freshTV (stCnt st2)
---     st3 = extendState st2 "res" t
---     st4 = unify st3 t1 (t2 :=> t)
---     -- ** gamma' = apply (stSub st2) gamma
-infer st gamma (ELet x e1 e2)  = infer st1 newGm e2
-  where
-    (st1, t1) = infer st gamma e1
-    -- newSt = extendState st1 x t1
-    newGm = extendTypeEnv x (generalize gamma t1) gamma
+--     -- newSt = extendState st1 x t1
+--     newGm = extendTypeEnv x (Mono t1) gamma
 infer st gamma (EBin op e1 e2) = infer st gamma asApp
   where
     asApp = EApp (EApp opVar e1) e2
