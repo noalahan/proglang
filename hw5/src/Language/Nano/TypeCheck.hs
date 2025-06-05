@@ -156,9 +156,11 @@ unify _  t TInt     = throw (Error ("type error: cannot unify " ++ show t ++ " a
 unify st TBool t    = if t == TBool then st else throw (Error ("type error: cannot unify Bool and " ++ show t))
 unify _  t TBool    = throw (Error ("type error: cannot unify " ++ show t ++ " and Bool"))
 unify st (TList t1) (TList t2) = unify st t1 t2
-unify st (arg1 :=> res1) (arg2 :=> res2) = unify s (apply (stSub s) res1) (apply (stSub s) res2)
+unify st (arg1 :=> res1) (arg2 :=> res2) = unify st1 res1' res2'
   where
-    s = unify st arg1 arg2
+    st1 = unify st arg1 arg2
+    res1' = apply (stSub st1) res1
+    res2' = apply (stSub st1) res2
 
 --------------------------------------------------------------------------------
 -- Problem 3: Type Inference
